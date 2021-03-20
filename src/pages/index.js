@@ -16,8 +16,7 @@ const features = [
     backgroundImage: "https://cdn.auth0.com/blog/react-js/react.png",
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        更新一些关于React，React Native的文章。同时更新一些React配套组件库，比如React-Router-Dom,React-Spring等等。
       </>
     ),
     content:
@@ -26,13 +25,12 @@ const features = [
   {
     title: "Manjaro Linux",
     imageUrl:
-      "https://blog.desdelinux.net/wp-content/uploads/2012/01/110726021053114429_f0_01-600x300.png",
+      "https://www.archlinux.org/static/logos/archlinux-logo-black-scalable.svg",
     backgroundImage:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Manjaro-logo.svg/1024px-Manjaro-logo.svg.png",
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        更新一些Linux系统安装配置。目前以Manjaro Linux为主，后续可能更新Arch的一些安装配置。也折腾过黑苹果，有时间也会更新一下黑苹果折腾记录。
       </>
     ),
     content:
@@ -45,8 +43,7 @@ const features = [
     backgroundImage: "https://miro.medium.com/max/2800/0*T5dI492m4Ip73_kD.png",
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        虽然目前主要学习前端，但是找不到同学来做后端api啊，哭了。没办法只能自己另起炉灶了，目前选择的是express+MongoDB，还在学习中，持续更新。
       </>
     ),
     content:
@@ -74,12 +71,23 @@ export default function Home() {
   const { siteConfig = {} } = context;
   const title = useSpring({
     from: { opacity: 0, fontSize: 0, color: "white", Top: 0 },
-    to: { opacity: 1, fontSize: 50, color: "black" },
+    to: { opacity: 1, fontSize: 40, color: "black" },
     config: config.default && { duration: 1000 },
   });
   const text = useSpring({
-    from: { opacity: 0, transform: "translate3d(-100%,0,0)" },
-    to: { opacity: 1, transform: "translate3d(0,0,0)" },
+    from: {
+      opacity: 0,
+      transform: "translate3d(-100%,0,0)",
+      fontSize: 0,
+      fontWeight: "normal",
+      maxWidth: '700px'
+    },
+    to: {
+      opacity: 1,
+      transform: "translate3d(0,0,0)",
+      fontSize: 20,
+      fontWeight: "bold",
+    },
     config: config.default && { duration: 500 },
     delay: 500,
   });
@@ -106,7 +114,7 @@ export default function Home() {
         }}
       >
         <div className="container">
-          <div style={{ marginLeft: "28vw", paddingTop: "10vw" }}>
+          <div style={{ marginLeft: "25vw", paddingTop: "10vw" }}>
             <animated.h1 className="hero__title" style={title}>
               Hello!我是<span style={{ color: "#3578e5" }}>Tohsaka888</span>
             </animated.h1>
@@ -120,17 +128,19 @@ export default function Home() {
               计算机小白,有什么地方写的不对，欢迎QQ和我交流。
             </animated.p>
             <animated.div style={{ marginBottom: "20px" }} style={icon}>
-              <GithubOutlined style={{ fontSize: "30px" }} />
-              <span
-                style={{
-                  marginLeft: "10px",
-                  color: "#3578e5",
-                  fontWeight: "bold",
-                }}
-              >
-                Tohsaka888
-              </span>
-              <QqOutlined style={{ fontSize: "30px", marginLeft: "20px" }} />
+              <div>
+                <GithubOutlined style={{ fontSize: "30px" }} />
+                <span
+                  style={{
+                    marginLeft: "10px",
+                    color: "#3578e5",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Tohsaka888
+                </span>
+              </div>
+              <QqOutlined style={{ fontSize: "30px", marginTop: "20px" }} />
               <span
                 style={{
                   marginLeft: "10px",
