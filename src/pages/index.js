@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
@@ -6,7 +6,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 import { GithubOutlined, QqOutlined } from "@ant-design/icons";
-import { animated, config, useSpring, useTransition } from "react-spring";
+import { animated, config, useSpring, useSprings } from "react-spring";
 
 const features = [
   {
@@ -16,7 +16,8 @@ const features = [
     backgroundImage: "https://cdn.auth0.com/blog/react-js/react.png",
     description: (
       <>
-        更新一些关于React，React Native的文章。同时更新一些React配套组件库，比如React-Router-Dom,React-Spring等等。
+        更新一些关于React，React
+        Native的文章。同时更新一些React配套组件库，比如React-Router-Dom,React-Spring等等。
       </>
     ),
     content:
@@ -30,7 +31,8 @@ const features = [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Manjaro-logo.svg/1024px-Manjaro-logo.svg.png",
     description: (
       <>
-        更新一些Linux系统安装配置。目前以Manjaro Linux为主，后续可能更新Arch的一些安装配置。也折腾过黑苹果，有时间也会更新一下黑苹果折腾记录。
+        更新一些Linux系统安装配置。目前以Manjaro
+        Linux为主，后续可能更新Arch的一些安装配置。也折腾过黑苹果，有时间也会更新一下黑苹果折腾记录。
       </>
     ),
     content:
@@ -69,18 +71,15 @@ function Feature({ imageUrl, title, description }) {
 export default function Home() {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
-  const title = useSpring({
-    from: { opacity: 0, fontSize: 0, color: "white", Top: 0 },
-    to: { opacity: 1, fontSize: 40, color: "black" },
-    config: config.default && { duration: 1000 },
-  });
+  const [title, set] = useSpring(() => ({ opacity: 0, fontSize: 0, Top: 0 }));
+  const currentRef = useRef(-1);
   const text = useSpring({
     from: {
       opacity: 0,
       transform: "translate3d(-100%,0,0)",
       fontSize: 0,
       fontWeight: "normal",
-      maxWidth: '700px'
+      maxWidth: "700px",
     },
     to: {
       opacity: 1,
@@ -89,15 +88,44 @@ export default function Home() {
       fontWeight: "bold",
     },
     config: config.default && { duration: 500 },
-    delay: 500,
   });
   const icon = useSpring({
     from: { opacity: 0, transform: "translate3d(100%,0,0)" },
     to: { opacity: 1, transform: "translate3d(0,0,0)" },
     config: config.default && { duration: 500 },
-    delay: 500,
   });
+  const [titleStyle, setTitleStyle] = useSprings(features.length, (index) => ({
+    opacity: 0,
+    fontSize: 0,
+  }));
   const testRef = useRef();
+  useEffect(() => {
+    set({ opacity: 1, fontSize: 40 });
+    window.addEventListener("scroll", scollAnimate);
+  }, []);
+  const scollAnimate = () => {
+    try {
+      for (let i = 0; i < features.length; i++) {
+        if (
+          testRef.current.childNodes[i].childNodes[1].getBoundingClientRect()
+            .top > 0 &&
+          testRef.current.childNodes[i].childNodes[1].getBoundingClientRect()
+            .top < window.innerHeight
+        ) {
+          currentRef.current = i;
+          setTitleStyle((index) => ({
+            opacity: index === currentRef.current ? 1 : 0,
+            fontSize: index === currentRef.current ? 40 : 0,
+          }));
+          console.log(currentRef.current);
+        } else {
+          currentRef.current = -1;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
@@ -177,50 +205,52 @@ export default function Home() {
                   <Feature key={idx} {...props} />
                 ))}
               </div>
-              {features.map((item, index) => {
-                return (
-                  <div ref={testRef}>
-                    <div
-                      style={{
-                        backgroundImage: `url(${item.backgroundImage})`,
-                        backgroundAttachment: "fixed",
-                        width: "100%",
-                        height: "50vh",
-                        backgroundPosition: "center center",
-                        backgroundSize: "cover",
-                        opacity: 1,
-                        zIndex: -1,
-                      }}
-                      key={index}
-                    ></div>
-                    <div
-                      style={{
-                        zIndex: 1,
-                        width: "100%",
-                        marginTop: "10vh",
-                        marginBottom: "10vh",
-                      }}
-                    >
-                      <div style={{ width: "100%" }}>
-                        <animated.h1
-                          style={{ fontWeight: "bold" }}
-                          style={title}
-                        >
-                          {item.title}
-                        </animated.h1>
-                      </div>
+              <div ref={testRef}>
+                {titleStyle.map((item, index) => {
+                  return (
+                    <div key={index}>
                       <div
                         style={{
-                          textAlign: "start",
-                          fontSize: "18px",
+                          backgroundImage: `url(${features[index].backgroundImage})`,
+                          backgroundAttachment: "fixed",
+                          width: "100%",
+                          height: "50vh",
+                          backgroundPosition: "center center",
+                          backgroundSize: "cover",
+                          opacity: 1,
+                          zIndex: -1,
+                        }}
+                        key={index}
+                      ></div>
+                      <div
+                        style={{
+                          zIndex: 1,
+                          width: "100%",
+                          marginTop: "10vh",
+                          marginBottom: "10vh",
                         }}
                       >
-                        {item.content}
+                        <div style={{ width: "100%" }}>
+                          <animated.h1
+                            style={{ fontWeight: "bold" }}
+                            style={item}
+                          >
+                            {features[index].title}
+                          </animated.h1>
+                        </div>
+                        <div
+                          style={{
+                            textAlign: "start",
+                            fontSize: "18px",
+                          }}
+                        >
+                          {features[index].content}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </section>
         )}
