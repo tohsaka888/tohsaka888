@@ -6,7 +6,8 @@ module.exports = {
       items: [
         'express',
         'mongoDB',
-        'react-spring'
+        'react-spring',
+        'react-spring-demo'
       ],
     },
   ],

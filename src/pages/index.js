@@ -73,27 +73,20 @@ export default function Home() {
   const { siteConfig = {} } = context;
   const [title, set] = useSpring(() => ({ opacity: 0, fontSize: 0, Top: 0 }));
   const currentRef = useRef(-1);
-  const text = useSpring({
-    from: {
-      opacity: 0,
-      transform: "translate3d(-100%,0,0)",
-      fontSize: 0,
-      fontWeight: "normal",
-      maxWidth: "700px",
-    },
-    to: {
-      opacity: 1,
-      transform: "translate3d(0,0,0)",
-      fontSize: 20,
-      fontWeight: "bold",
-    },
-    config: config.default && { duration: 500 },
-  });
-  const icon = useSpring({
-    from: { opacity: 0, transform: "translate3d(100%,0,0)" },
-    to: { opacity: 1, transform: "translate3d(0,0,0)" },
-    config: config.default && { duration: 500 },
-  });
+  const titleRef = useRef();
+  const iconRef = useRef();
+  const [text, setText] = useSpring(() => ({
+    opacity: 0,
+    transform: "translate3d(-100%,0,0)",
+    fontSize: 0,
+    fontWeight: "normal",
+    maxWidth: "700px",
+  }));
+  const [icon, setIcon] = useSpring(() => ({
+    opacity: 0,
+    transform: "translate3d(100%,0,0)",
+  }));
+  // { config: config.default }
   const [titleStyle, setTitleStyle] = useSprings(features.length, (index) => ({
     opacity: 0,
     fontSize: 0,
@@ -101,8 +94,25 @@ export default function Home() {
   const testRef = useRef();
   useEffect(() => {
     set({ opacity: 1, fontSize: 40 });
+    setText({
+      opacity: 1,
+      transform: "translate3d(0,0,0)",
+      fontSize: 20,
+      fontWeight: "bold",
+    });
+    setIcon({ opacity: 1, transform: "translate3d(0,0,0)" });
     window.addEventListener("scroll", scollAnimate);
   }, []);
+  const changeAnimate = (tempRef, beforeStyle, afterStyle, setStyle) => {
+    if (
+      tempRef.current.getBoundingClientRect().top > 0 &&
+      tempRef.current.getBoundingClientRect().top < window.innerHeight
+    ) {
+      setStyle(afterStyle,{config: config.default},{delay: 500});
+    } else {
+      setStyle(beforeStyle);
+    }
+  };
   const scollAnimate = () => {
     try {
       for (let i = 0; i < features.length; i++) {
@@ -117,11 +127,40 @@ export default function Home() {
             opacity: index === currentRef.current ? 1 : 0,
             fontSize: index === currentRef.current ? 40 : 0,
           }));
-          console.log(currentRef.current);
         } else {
           currentRef.current = -1;
+          // setTitleStyle((index) => ({ opacity: 0, fontSize: 0 }));
         }
       }
+      changeAnimate(
+        titleRef,
+        { opacity: 0, fontSize: 0 },
+        { opacity: 1, fontSize: 40 },
+        set
+      );
+      changeAnimate(
+        titleRef,
+        {
+          opacity: 0,
+          transform: "translate3d(-100%,0,0)",
+          fontSize: 0,
+          fontWeight: "normal",
+          maxWidth: "700px",
+        },
+        {
+          opacity: 1,
+          transform: "translate3d(0,0,0)",
+          fontSize: 20,
+          fontWeight: "bold",
+        },
+        setText
+      );
+      changeAnimate(
+        iconRef,
+        { opacity: 0, transform: "translate3d(100%,0,0)" },
+        { opacity: 1, transform: "translate3d(0,0,0)" },
+        setIcon
+      );
     } catch (error) {
       console.log(error);
     }
@@ -142,7 +181,10 @@ export default function Home() {
         }}
       >
         <div className="container">
-          <div style={{ marginLeft: "25vw", paddingTop: "10vw" }}>
+          <div
+            style={{ marginLeft: "25vw", paddingTop: "10vw" }}
+            ref={titleRef}
+          >
             <animated.h1 className="hero__title" style={title}>
               Hello!我是<span style={{ color: "#3578e5" }}>Tohsaka888</span>
             </animated.h1>
@@ -155,7 +197,11 @@ export default function Home() {
               Linux,顺便还想了解一下node.js。那么你可能在这里找到答案。最近在折腾express+MongoDB，随缘更新。
               计算机小白,有什么地方写的不对，欢迎QQ和我交流。
             </animated.p>
-            <animated.div style={{ marginBottom: "20px" }} style={icon}>
+            <animated.div
+              style={{ marginBottom: "20px" }}
+              style={icon}
+              ref={iconRef}
+            >
               <div>
                 <GithubOutlined style={{ fontSize: "30px" }} />
                 <span
