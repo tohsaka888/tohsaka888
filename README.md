@@ -91,7 +91,9 @@
     <img src="https://github-profile-trophy.vercel.app/?username=tohsaka888&no-bg=true&column=7&theme=discord&margin-w=15" alt="trophy-niclas" height="200px"/>
 </p> -->
 
+<!--
 ![github activity graph](https://github-readme-activity-graph.cyclic.app/graph?username=tohsaka888&theme=react-dark)
+-->
 
 <p align="center">
     <img align="center" src="http://github-readme-streak-stats.herokuapp.com?user=tohsaka888&theme=highcontrast&hide_border=true"/>
